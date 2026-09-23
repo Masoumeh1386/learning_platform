@@ -1,0 +1,50 @@
+<p class="card-text text-muted">{{ course.short_description|truncatewords:12 }}</p>
+                            <p class="text-muted mb-1">مدرس: {{ course.instructor.username }}</p>
+                            <p class="text-muted mb-1">سطح: {{ course.get_level_display }}</p>
+                            <p class="price mt-auto">
+                                {% if course.price == 0 %}
+                                    رایگان
+                                {% else %}
+                                    {{ course.price }} تومان
+                                {% endif %}
+                            </p>
+                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary btn-sm">مشاهده</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-info">دوره‌ای با این مشخصات پیدا نشد.</div>
+            {% endfor %}
+        </div>
+
+        <!-- صفحه‌بندی -->
+        {% if page_obj.has_other_pages %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_level %}&level={{ selected_level }}{% endif %}{% if selected_price %}&price={{ selected_price }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">اول</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">قبلی</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">بعدی</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">آخر</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

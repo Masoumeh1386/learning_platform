@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>ویرایش درس: {{ lesson.title }}</h1>
+<p class="text-muted">دوره: {{ lesson.course.title }}</p>
+
+<form method="POST" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-warning">ذخیره تغییرات</button>
+    <a href="{% url 'add_lesson' lesson.course.slug %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}

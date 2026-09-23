@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>ویرایش دوره: {{ course.title }}</h1>
+
+<form method="POST" enctype="multipart/form-data" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-warning">ذخیره تغییرات</button>
+    <a href="{% url 'my_created_courses' %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ course.title }}</h1>
+<p class="text-muted">مدرس: {{ course.instructor.username }}</p>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+{% if course.image %}
+    <img src="{{ course.image.url }}" class="img-fluid mb-3" style="max-height: 400px;">
+{% endif %}
+
+<p>دسته: <a href="{% url 'category_detail' course.category.slug %}">{{ course.category.name }}</a></p>
+<p>سطح: {{ course.get_level_display }}</p>
+<p>قیمت: 
+    {% if course.price == 0 %}
+        <span class="text-success">رایگان</span>
+    {% else %}
+        {{ course.price }} تومان
+    {% endif %}
+</p>
+<p>تعداد دانشجو: {{ course.students.count }}</p>
+
+{% if is_enrolled %}
+    <div class="alert alert-success">شما در این دوره ثبت‌نام کرده‌اید. ✅</div>
+{% else %}
+    {% if course.price == 0 %}
+        <a href="{% url 'enroll_course' course.slug %}" class="btn btn-success">ثبت‌نام رایگان</a>
+    {% else %}
+        <a href="{% url 'add_to_cart' course.slug %}" class="btn btn-primary">افزودن به سبد خرید</a>
+    {% endif %}
+{% endif %}
+
+<h4 class="mt-4">توضیحات</h4>
+<p>{{ course.description }}</p>
+
+<h4>درس‌ها ({{ lessons.count }})</h4>
+<ul class="list-group">
+    {% for lesson in lessons %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ lesson.order }} - {{ lesson.title }}</span>
+            {% if is_enrolled %}
+                <span class="badge bg-success">قابل مشاهده</span>
+            {% else %}
+                <span class="badge bg-secondary">🔒 قفل</span>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li class="list-group-item">هنوز درسی اضافه نشده.</li>
+    {% endfor %}
+</ul>
+<hr>
+
+<!-- بخش امتیاز -->
+<h4>امتیاز دوره</h4>
+<p>
+    میانگین امتیاز:
+    <strong class="text-warning">⭐ {{ avg_rating }} از ۵</strong>
+    ({{ course.ratings.count }} رأی)
+</p>
+
+{% if user.is_authenticated %}
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <p>امتیاز خودت رو ثبت کن:</p>
+        {{ rating_form.as_p }}
+        <button type="submit" name="submit_rating" class="btn btn-warning">ثبت امتیاز</button>
+    </form>
+{% else %}
+    <p>برای ثبت امتیاز <a href="{% url 'login' %}">وارد</a> شو.</p>
+{% endif %}
+
+<hr>
+
+<!-- بخش کامنت‌ها -->
+<h4>نظرات ({{ comments.count }})</h4>
+
+{% if user.is_authenticated %}
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" name="submit_comment" class="btn btn-primary">ارسال نظر</button>
+    </form>
+{% else %}
+    <p>برای ثبت نظر <a href="{% url 'login' %}">وارد</a> شو.</p>
+{% endif %}
+
+{% for comment in comments %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <strong>{{ comment.user.username }}</strong>
+            <small class="text-muted">{{ comment.created_at }}</small>
+            <p class="mt-2">{{ comment.text }}</p>
+        </div>
+    </div>
+{% empty %}
+    <p>هنوز نظری ثبت نشده.</p>
+{% endfor %}
+{% endblock %}

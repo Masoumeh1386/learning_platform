@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>افزودن درس به: {{ course.title }}</h1>
+
+<div class="row mt-4">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">افزودن درس جدید</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">ذخیره درس</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <h5>درس‌های این دوره:</h5>
+        <ul class="list-group">
+    {% for lesson in lessons %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>درس {{ lesson.order }} - {{ lesson.title }}</span>
+            <div>
+                <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-warning btn-sm">ویرایش</a>
+                <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger btn-sm">حذف</a>
+            </div>
+        </li>
+    {% empty %}
+        <li class="list-group-item">هنوز درسی اضافه نشده.</li>
+    {% endfor %}
+</ul>
+        <a href="{% url 'my_created_courses' %}" class="btn btn-secondary mt-3">بازگشت به دوره‌های من</a>
+    </div>
+</div>
+{% endblock %}

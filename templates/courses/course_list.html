@@ -1,0 +1,117 @@
+html
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if query %}
+        نتایج جستجو برای: <span class="text-primary">{{ query }}</span>
+    {% elif selected_category %}
+        دوره‌های این دسته
+    {% else %}
+        همه‌ی دوره‌ها
+    {% endif %}
+</h1>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">فیلترها</h5>
+
+                <form method="GET">
+                    {% if query %}
+                        <input type="hidden" name="q" value="{{ query }}">
+                    {% endif %}
+
+                    <label class="form-label mt-2">دسته‌بندی:</label>
+                    <select name="category" class="form-select mb-2">
+                        <option value="">همه</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>
+                                {{ cat.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label class="form-label">سطح:</label>
+                    <select name="level" class="form-select mb-2">
+                        <option value="">همه</option>
+                        <option value="beginner" {% if selected_level == 'beginner' %}selected{% endif %}>مبتدی</option>
+                        <option value="intermediate" {% if selected_level == 'intermediate' %}selected{% endif %}>متوسط</option>
+                        <option value="advanced" {% if selected_level == 'advanced' %}selected{% endif %}>پیشرفته</option>
+                    </select>
+
+                    <label class="form-label">قیمت:</label>
+                    <select name="price" class="form-select mb-2">
+                        <option value="">همه</option>
+                        <option value="free" {% if selected_price == 'free' %}selected{% endif %}>رایگان</option>
+                        <option value="paid" {% if selected_price == 'paid' %}selected{% endif %}>پولی</option>
+                    </select>
+
+                    <label class="form-label">مرتب‌سازی:</label>
+                    <select name="sort" class="form-select mb-3">
+                        <option value="-created_at" {% if selected_sort == '-created_at' %}selected{% endif %}>جدیدترین</option>
+                        <option value="cheap" {% if selected_sort == 'cheap' %}selected{% endif %}>ارزان‌ترین</option>
+                        <option value="expensive" {% if selected_sort == 'expensive' %}selected{% endif %}>گران‌ترین</option>
+                        <option value="oldest" {% if selected_sort == 'oldest' %}selected{% endif %}>قدیمی‌ترین</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary w-100">اعمال فیلتر</button>
+                    <a href="{% url 'course_list' %}" class="btn btn-outline-secondary w-100 mt-2">حذف فیلترها</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="row">
+            {% for course in courses %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text text-muted">{{ course.short_description|truncatewords:12 }}</p>
+                            <p class="text-muted mb-1">مدرس: {{ course.instructor.username }}</p>
+                            <p class="text-muted mb-1">سطح: {{ course.get_level_display }}</p>
+                            <p class="text-warning mb-1">⭐ {{ course.average_rating }} ({{ course.ratings.count }} رأی)</p>
+                            <p class="price mt-auto">
+                                {% if course.price == 0 %}
+                                    رایگان
+                                {% else %}
+                                    {{ course.price }} تومان
+                                {% endif %}
+                            </p>
+                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary btn-sm">مشاهده</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-info">دوره‌ای با این مشخصات پیدا نشد.</div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">اول</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">آخر</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

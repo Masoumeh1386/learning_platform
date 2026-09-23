@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>داشبورد</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>خوش اومدی {{ user.username }}!</h5>
+        <p>
+            ایمیل: {{ user.email }}<br>
+            آخرین ورود: {{ user.last_login }}
+        </p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>سفارش‌ها</h5>
+                <p class="display-6">{{ total_orders }}</p>
+                <a href="#" class="btn btn-primary btn-sm">مشاهده</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>دوره‌های خریداری‌شده</h5>
+                <p class="display-6">{{ total_enrollments }}</p>
+                <a href="{% url 'my_created_courses' %}" class="btn btn-primary btn-sm">مشاهده</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>دوره‌های من (مدرس)</h5>
+                <p class="display-6">{{ total_courses_created }}</p>
+                <a href="{% url 'add_course' %}" class="btn btn-primary btn-sm">افزودن دوره</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>آخرین سفارش‌ها</h4>
+        <ul class="list-group mb-4">
+            {% for order in recent_orders %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>سفارش #{{ order.id }}</span>
+                    <span>{{ order.total_price }} تومان</span>
+                </li>
+            {% empty %}
+                <li class="list-group-item">سفارشی ثبت نشده.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-md-6">
+        <h4>آخرین دوره‌های خریداری‌شده</h4>
+        <ul class="list-group mb-4">
+            {% for enrollment in recent_enrollments %}
+                <li class="list-group-item">
+                    <a href="{% url 'course_detail' enrollment.course.slug %}">
+                        {{ enrollment.course.title }}
+                    </a>
+                </li>
+            {% empty %}
+                <li class="list-group-item">هنوز دوره‌ای نخریدی.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h5>درآمد من (مدرس)</h5>
+            <p class="display-6 text-success">
+                {% with total=user.courses.all|length %}
+                    {{ total }}
+                {% endwith %} دوره
+            </p>
+            <a href="{% url 'instructor_stats' %}" class="btn btn-primary btn-sm">آمار کامل</a>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'profile' %}" class="btn btn-info">ویرایش پروفایل</a>
+{% endblock %}

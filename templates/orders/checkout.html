@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>نهایی کردن خرید</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>دوره</th>
+            <th>مدرس</th>
+            <th>قیمت</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.course.title }}</td>
+            <td>{{ item.course.instructor.username }}</td>
+            <td>{{ item.course.price }} تومان</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>مجموع کل: {{ total }} تومان</h4>
+
+<form method="POST" class="mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">تأیید و پرداخت</button>
+    <a href="{% url 'cart_detail' %}" class="btn btn-secondary">بازگشت به سبد</a>
+</form>
+{% endblock %}

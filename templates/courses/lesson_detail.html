@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h5>درس‌های دوره:</h5>
+        <div class="list-group">
+            {% for l in lessons %}
+                <a href="{% url 'lesson_detail' course.slug l.id %}"
+                   class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %}">
+                    درس {{ l.order }}: {{ l.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h2>درس {{ lesson.order }}: {{ lesson.title }}</h2>
+        <hr>
+
+        {% if lesson.video_url %}
+            <p>
+                <a href="{{ lesson.video_url }}" target="_blank" class="btn btn-primary">
+                    🎬 مشاهده ویدیو
+                </a>
+            </p>
+        {% endif %}
+
+        {% if lesson.content %}
+            <div class="card">
+                <div class="card-body">
+                    {{ lesson.content|linebreaks }}
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">محتوایی برای این درس ثبت نشده.</p>
+        {% endif %}
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+            {% if lesson.order > 1 %}
+                <a href="#" class="btn btn-outline-secondary">درس قبلی</a>
+            {% else %}
+                <span></span>
+            {% endif %}
+
+            <a href="{% url 'learning_page' course.slug %}" class="btn btn-secondary">بازگشت به لیست درس‌ها</a>
+
+            <a href="#" class="btn btn-outline-primary">درس بعدی</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

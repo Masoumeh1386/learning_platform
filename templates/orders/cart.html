@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>سبد خرید</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+{% if items %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>دوره</th>
+                <th>مدرس</th>
+                <th>قیمت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    <a href="{% url 'course_detail' item.course.slug %}">
+                        {{ item.course.title }}
+                    </a>
+                </td>
+                <td>{{ item.course.instructor.username }}</td>
+                <td>{{ item.course.price }} تومان</td>
+                <td>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h4>مجموع: {{ cart.total_price }} تومان</h4>
+        <div>
+            <a href="{% url 'clear_cart' %}" class="btn btn-outline-danger">خالی کردن سبد</a>
+            <a href="{% url 'checkout' %}" class="btn btn-success">نهایی کردن خرید</a>
+        </div>
+    </div>
+{% else %}
+    <p>سبد خرید شما خالیه.</p>
+    <a href="{% url 'course_list' %}" class="btn btn-primary">مشاهده دوره‌ها</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>حذف دوره</h1>
+
+<div class="alert alert-danger">
+    مطمئنی می‌خوای دوره‌ی «{{ course.title }}» رو حذف کنی؟<br>
+    این کار قابل بازگشت نیست و همه‌ی درس‌ها و ثبت‌نام‌های مربوطه هم حذف می‌شن.
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">بله، حذف کن</button>
+    <a href="{% url 'my_created_courses' %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}

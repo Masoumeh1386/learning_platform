@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>حذف درس</h1>
+
+<div class="alert alert-danger">
+    مطمئنی می‌خوای درس «{{ lesson.title }}» رو حذف کنی؟
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">بله، حذف کن</button>
+    <a href="{% url 'add_lesson' lesson.course.slug %}" class="btn btn-secondary">انصراف</a>
+</form>
+{% endblock %}

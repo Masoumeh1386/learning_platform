@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ course.title }}</h1>
+<p class="text-muted">مدرس: {{ course.instructor.username }}</p>
+
+<h4 class="mt-4">درس‌های این دوره:</h4>
+
+{% if lessons %}
+    <div class="list-group">
+        {% for lesson in lessons %}
+            <a href="{% url 'lesson_detail' course.slug lesson.id %}" class="list-group-item list-group-item-action">
+                <strong>درس {{ lesson.order }}:</strong> {{ lesson.title }}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if first_lesson %}
+        <a href="{% url 'lesson_detail' course.slug first_lesson.id %}" class="btn btn-success mt-3">
+            شروع یادگیری
+        </a>
+    {% endif %}
+{% else %}
+    <p>هنوز درسی برای این دوره اضافه نشده.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>آمار فروش من</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>تعداد دوره‌ها</h5>
+                <p class="display-6">{{ total_courses }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>تعداد دانشجوها</h5>
+                <p class="display-6">{{ total_students }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5>مجموع درآمد</h5>
+                <p class="display-6 text-success">{{ total_revenue }} تومان</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>آمار به تفکیک دوره</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>عنوان دوره</th>
+            <th>تعداد دانشجو</th>
+            <th>قیمت</th>
+            <th>درآمد</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in course_data %}
+        <tr>
+            <td>
+                <a href="{% url 'course_detail' item.course.slug %}">
+                    {{ item.course.title }}
+                </a>
+            </td>
+            <td>{{ item.students_count }}</td>
+            <td>
+                {% if item.course.price == 0 %}
+                    رایگان
+                {% else %}
+                    {{ item.course.price }} تومان
+                {% endif %}
+            </td>
+            <td>{{ item.revenue }} تومان</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">هنوز دوره‌ای نساختی.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'my_created_courses' %}" class="btn btn-secondary">بازگشت به دوره‌های من</a>
+{% endblock %}
