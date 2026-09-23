@@ -1,3 +1,4 @@
+
 __pycache__/
 *.pyc 
 *.pyo
@@ -7,3 +8,13 @@ media/
 .venv/
 venv/
 staticfiles/
+
+#Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+#Backup files
+*.bak 
+*.swp
