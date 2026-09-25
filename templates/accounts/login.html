@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">ورود به آکادمی من</h2>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                نام کاربری یا رمز عبور اشتباهه!
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">نام کاربری</label>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">رمز عبور</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">ورود</button>
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center mb-0">
+                        حساب نداری؟
+                        <a href="{% url 'register' %}">ثبت‌نام کن</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

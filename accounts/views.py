@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import ProfileForm
 from orders.models import Order, Enrollment
-
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
+from .forms import RegisterForm, ProfileForm
 
 @login_required
 def profile(request):
@@ -40,3 +41,19 @@ def dashboard(request):
         'recent_orders': recent_orders,
         'recent_enrollments': recent_enrollments,
     })
+
+
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # ورود خودکار بعد از ثبت‌نام
+            messages.success(request, 'حساب شما ساخته شد! خوش اومدی 🎉')
+            return redirect('home')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'accounts/register.html', {'form': form})
